@@ -1,0 +1,10 @@
+[Desktop Entry]
+Type=Application
+Name=Carbon DSK
+Comment=Carbon DSK desktop panel and application drawer
+Exec=/usr/local/bin/carbon-dsk
+TryExec=/usr/local/bin/carbon-dsk
+Icon=carbon-dsk
+Terminal=false
+NoDisplay=true
+StartupNotify=false

@@ -1,0 +1,63 @@
+#!/bin/sh
+set -eu
+
+theme_stage=/tmp/jadevos-mactahoe
+gtk_source="${theme_stage}/gtk-theme"
+icon_source="${theme_stage}/icon-theme"
+theme_home="$(mktemp -d /tmp/jadevos-mactahoe-home.XXXXXX)"
+trap 'rm -rf -- "$theme_home"' EXIT
+
+if [ ! -f "${gtk_source}/install.sh" ]; then
+    printf 'No se encuentra el instalador del tema GTK MacTahoe.\n' >&2
+    exit 1
+fi
+if [ ! -f "${icon_source}/install.sh" ]; then
+    printf 'No se encuentra el instalador de iconos MacTahoe.\n' >&2
+    exit 1
+fi
+
+printf 'Instalando el tema GTK MacTahoe...\n'
+USER=root TERM=xterm bash "${gtk_source}/install.sh" \
+    --dest /usr/share/themes \
+    --color dark \
+    --theme orange \
+    --opacity normal \
+    --alt normal \
+    --scheme standard \
+    --blur \
+    --shell -i simple -p 30 -h smaller -sf \
+    --silent-mode
+
+printf 'Instalando los iconos MacTahoe...\n'
+bash "${icon_source}/install.sh" \
+    --dest /usr/share/icons \
+    --theme orange
+
+printf 'Generando el tema MacTahoe para libadwaita...\n'
+chmod 1777 /tmp
+chown -R nobody:nogroup "$gtk_source"
+chown nobody:nogroup "$theme_home"
+printf 'y\n' | runuser -u nobody -- env HOME="$theme_home" \
+    bash "${gtk_source}/install.sh" \
+    --dest "${theme_home}/.themes" \
+    --color dark \
+    --theme orange \
+    --opacity normal \
+    --alt normal \
+    --scheme standard \
+    --libadwaita
+
+test -s "${theme_home}/.config/gtk-4.0/gtk.css"
+install -d -m 0755 /etc/skel/.config
+cp -a "${theme_home}/.config/gtk-4.0" /etc/skel/.config/gtk-4.0
+chown -R root:root /etc/skel/.config/gtk-4.0
+
+source_docs=/usr/share/doc/jadevos/mactahoe
+install -d -m 0755 "$source_docs"
+install -m 0644 "${theme_stage}/gtk-theme.tar.gz" \
+    "${source_docs}/gtk-theme-0aa2a2ba1e07277a49dae9a3b90881c899d2afbe.tar.gz"
+install -m 0644 "${theme_stage}/icon-theme.tar.gz" \
+    "${source_docs}/icon-theme-839848b9a8a38a92a6936e30c4abe35cc6f2546d.tar.gz"
+
+rm -rf -- "$theme_stage"
+dconf update

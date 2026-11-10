@@ -1,0 +1,9 @@
+[Desktop Entry]
+Type=Application
+Name=Lock Screen
+Comment=Lock the Carbon DSK session
+Exec=/usr/local/bin/carbon-dsk --lock
+TryExec=/usr/local/bin/carbon-dsk
+Icon=system-lock-screen
+Terminal=false
+NoDisplay=true

@@ -1,0 +1,12 @@
+[Desktop Entry]
+Name=HyperBrowser
+Name[es]=HyperBrowser
+Comment=Navegador web clásico de JadevOS
+Comment[en_GB]=Classic-style web browser for JadevOS
+Exec=/usr/local/bin/hyperbrowser
+TryExec=/usr/local/bin/hyperbrowser
+Icon=hyperbrowser
+Terminal=false
+Type=Application
+Categories=Network;WebBrowser;
+StartupNotify=true

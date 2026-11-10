@@ -1,0 +1,23 @@
+#!/bin/sh
+set -eu
+
+if ! grep -qw 'boot=live' /proc/cmdline; then
+    printf 'Refusing to configure the temporary JadevOS live account outside live mode.\n' >&2
+    exit 1
+fi
+
+session_user="jadevos-session-$(od -An -N4 -tx4 /dev/urandom | tr -d '[:space:]')"
+while getent passwd "$session_user" >/dev/null; do
+    session_user="jadevos-session-$(od -An -N4 -tx4 /dev/urandom | tr -d '[:space:]')"
+done
+
+useradd --create-home --shell /bin/bash --groups sudo "$session_user"
+printf '%s:live\n' "$session_user" | chpasswd
+
+install -d -m 0755 /etc/sddm.conf.d
+cat > /etc/sddm.conf.d/20-jadevOS-live-autologin.conf <<EOF
+[Autologin]
+User=${session_user}
+Session=gnome-xorg.desktop
+Relogin=false
+EOF

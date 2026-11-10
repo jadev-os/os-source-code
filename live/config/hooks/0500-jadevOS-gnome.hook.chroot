@@ -1,0 +1,12 @@
+#!/bin/sh
+set -eu
+
+dconf update
+
+install -d -o sddm -g sddm -m 0755 /var/lib/sddm
+cat > /var/lib/sddm/state.conf <<'EOF'
+[Last]
+Session=gnome-xorg.desktop
+EOF
+chown sddm:sddm /var/lib/sddm/state.conf
+chmod 0644 /var/lib/sddm/state.conf

@@ -1,0 +1,24 @@
+#!/bin/sh
+set -eu
+
+if [ "$#" -ne 1 ] || { [ "$1" != left ] && [ "$1" != right ]; }; then
+    printf 'Usage: carbon-snap left|right\n' >&2
+    exit 2
+fi
+
+geometry="$(xdotool getdisplaygeometry)"
+width="${geometry%% *}"
+height="${geometry#* }"
+if ! printf '%s\n' "$width $height" | grep -Eq '^[0-9]+ [0-9]+$'; then
+    printf 'Could not determine the screen dimensions.\n' >&2
+    exit 1
+fi
+
+half_width=$((width / 2))
+window_x=0
+if [ "$1" = right ]; then
+    window_x=$half_width
+fi
+window_height=$((height - 118))
+wmctrl -r :ACTIVE: -b remove,maximized_vert,maximized_horz
+wmctrl -r :ACTIVE: -e "0,${window_x},42,${half_width},${window_height}"

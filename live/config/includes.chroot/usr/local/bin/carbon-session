@@ -1,0 +1,75 @@
+#!/bin/sh
+set -eu
+
+export XDG_CURRENT_DESKTOP=Carbon
+export XDG_SESSION_DESKTOP=carbon-dsk
+export DESKTOP_SESSION=carbon-dsk
+
+config_dir="${XDG_CONFIG_HOME:-${HOME}/.config}/carbon-dsk"
+mkdir -p "$config_dir"
+log_dir="${XDG_CACHE_HOME:-${HOME}/.cache}/jadevos"
+mkdir -p "$log_dir"
+session_log="${log_dir}/carbon-dsk-session.log"
+child_pids=""
+
+cleanup() {
+    for pid in $child_pids; do
+        kill "$pid" 2>/dev/null || true
+    done
+}
+trap cleanup EXIT
+trap 'exit 0' HUP INT TERM
+
+if ! command -v openbox >/dev/null 2>&1 || ! command -v carbon-dsk >/dev/null 2>&1; then
+    printf 'Carbon DSK requires Openbox and its desktop panel.\n' >&2
+    exit 1
+fi
+
+wallpaper_file="${config_dir}/wallpaper"
+if [ -f "$wallpaper_file" ]; then
+    IFS= read -r wallpaper < "$wallpaper_file" || true
+else
+    wallpaper=/usr/share/backgrounds/jadevos-default-wallpaper.jpg
+fi
+if [ -z "${wallpaper:-}" ] || [ ! -f "$wallpaper" ]; then
+    printf 'Carbon DSK wallpaper is missing: %s\n' "${wallpaper:-not configured}" >&2
+    exit 1
+fi
+
+openbox --config-file /etc/xdg/openbox/rc.xml >>"$session_log" 2>&1 &
+window_manager_pid=$!
+child_pids="$window_manager_pid"
+sleep 1
+if ! kill -0 "$window_manager_pid" 2>/dev/null; then
+    printf 'Openbox exited before Carbon DSK could start.\n' >&2
+    cat "$session_log" >&2
+    exit 1
+fi
+
+start_component() {
+    label="$1"
+    shift
+    if ! command -v "$1" >/dev/null 2>&1; then
+        printf 'Carbon DSK component is unavailable: %s\n' "$label" >>"$session_log"
+        return
+    fi
+    "$@" >>"$session_log" 2>&1 &
+    child_pids="$child_pids $!"
+}
+
+start_component "picom compositor" picom --config /etc/xdg/picom.conf
+start_component "dunst notifications" dunst
+start_component "NetworkManager applet" nm-applet
+start_component "Bluetooth applet" blueman-applet
+start_component "power manager" xfce4-power-manager
+start_component "desktop icons and wallpaper" pcmanfm --desktop
+sleep 1
+if ! pcmanfm --wallpaper-mode=crop --set-wallpaper="$wallpaper" >>"$session_log" 2>&1; then
+    printf 'PCManFM could not apply the Carbon DSK wallpaper: %s\n' "$wallpaper" >&2
+    cat "$session_log" >&2
+    exit 1
+fi
+start_component "lock screen service" xss-lock --transfer-sleep-lock -- i3lock --nofork
+start_component "Carbon DSK panel and dock" carbon-dsk
+
+wait "$window_manager_pid"

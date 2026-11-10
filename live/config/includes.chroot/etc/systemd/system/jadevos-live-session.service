@@ -1,0 +1,12 @@
+[Unit]
+Description=Prepare JadevOS live session
+ConditionKernelCommandLine=boot=live
+Before=display-manager.service
+After=live-config.service
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/sbin/jadevos-live-session
+
+[Install]
+WantedBy=graphical.target

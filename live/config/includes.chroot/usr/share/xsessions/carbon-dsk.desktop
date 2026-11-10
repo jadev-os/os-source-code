@@ -1,0 +1,7 @@
+[Desktop Entry]
+Name=Carbon DSK
+Comment=JadevOS independent desktop environment
+Exec=carbon-session
+TryExec=carbon-session
+Type=Application
+DesktopNames=Carbon;Openbox;

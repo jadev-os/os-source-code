@@ -1,0 +1,9 @@
+{
+  "type": "dir",
+  "children": {
+    "me": {
+      "type": "dir",
+      "children": {}
+    }
+  }
+}

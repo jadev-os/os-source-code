@@ -1,0 +1,70 @@
+#!/bin/sh
+set -eu
+
+staged_wallpapers=/tmp/jadevos-wallpapers
+destination=/usr/share/backgrounds/jadevos
+default_image="${staged_wallpapers}/JadevOS Computers BETA 4.png"
+default_destination=/usr/share/backgrounds/jadevos-default-wallpaper.jpg
+
+if [ ! -d "$staged_wallpapers" ]; then
+    printf 'Falta la carpeta de wallpapers de JadevOS.\n' >&2
+    exit 1
+fi
+if [ ! -f "$default_image" ]; then
+    printf 'Falta la imagen del wallpaper predeterminado de JadevOS.\n' >&2
+    exit 1
+fi
+
+install -d -m 0755 "$destination"
+cp -a "${staged_wallpapers}/." "$destination/"
+if [ ! -f "${destination}/JadevOS Computers BETA 4.png" ]; then
+    printf 'No se instalo el wallpaper predeterminado de JadevOS.\n' >&2
+    exit 1
+fi
+install -D -m 0644 "$default_image" "$default_destination"
+install -d -m 0755 /usr/share/gnome-background-properties
+
+if [ -d /usr/share/gnome-background-properties ]; then
+    find /usr/share/gnome-background-properties -maxdepth 1 -type f \
+        -name 'debian-*.xml' -delete
+fi
+if [ -d /usr/share/desktop-base ]; then
+    find /usr/share/desktop-base -mindepth 2 -maxdepth 2 -type d \
+        \( -name wallpaper -o -name wallpaper-withlogo \) \
+        -prune -exec rm -rf -- {} +
+fi
+
+python3 - "$destination" \
+    /usr/share/gnome-background-properties/jadevos.xml <<'PY'
+import html
+from pathlib import Path
+import sys
+
+wallpaper_dir = Path(sys.argv[1])
+catalog = Path(sys.argv[2])
+extensions = {".jpg", ".jpeg", ".png", ".webp"}
+images = sorted(
+    (image for image in wallpaper_dir.iterdir()
+     if image.is_file() and image.suffix.lower() in extensions),
+    key=lambda image: image.name.casefold(),
+)
+if not images:
+    raise SystemExit(f"No JadevOS wallpapers found in {wallpaper_dir}")
+
+with catalog.open("w", encoding="utf-8") as output:
+    output.write('<?xml version="1.0" encoding="UTF-8"?>\n')
+    output.write('<!DOCTYPE wallpapers SYSTEM "gnome-wp-list.dtd">\n')
+    output.write("<wallpapers>\n")
+    for image in images:
+        output.write('  <wallpaper deleted="false">\n')
+        output.write(f"    <name>{html.escape(image.stem)}</name>\n")
+        output.write(f"    <filename>{html.escape(str(image))}</filename>\n")
+        output.write("    <options>zoom</options>\n")
+        output.write("    <shade_type>solid</shade_type>\n")
+        output.write("    <pcolor>#000000</pcolor>\n")
+        output.write("    <scolor>#000000</scolor>\n")
+        output.write("  </wallpaper>\n")
+    output.write("</wallpapers>\n")
+PY
+
+rm -rf -- "$staged_wallpapers"

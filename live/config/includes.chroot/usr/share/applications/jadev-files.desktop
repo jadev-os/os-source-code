@@ -1,0 +1,17 @@
+[Desktop Entry]
+Name=Files
+Name[es]=Archivos
+GenericName=File Manager
+GenericName[es]=Gestor de archivos
+Comment=Dual-pane file manager for JadevOS
+Comment[es]=Gestor de archivos de dos paneles para JadevOS
+Keywords=file;files;explorer;file manager;folder;folders;archivos;explorador;gestor;carpetas;jadevos;
+Keywords[es]=archivo;archivos;explorador;gestor de archivos;carpeta;carpetas;jadevos;
+Exec=/usr/local/bin/jadev-files %f
+TryExec=/usr/local/bin/jadev-files
+Icon=jadev-files
+Terminal=false
+Type=Application
+Categories=System;FileTools;FileManager;
+MimeType=inode/directory;application/x-directory;
+StartupNotify=true

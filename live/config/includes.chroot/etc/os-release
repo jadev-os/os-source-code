@@ -1,0 +1,7 @@
+PRETTY_NAME="JadevOS Computers 1.0 BETA 4"
+NAME="JadevOS Computers"
+VERSION_ID="1.0"
+VERSION="1.0 BETA 4"
+VERSION_CODENAME=kiwi
+ID=jadevos
+ID_LIKE=debian

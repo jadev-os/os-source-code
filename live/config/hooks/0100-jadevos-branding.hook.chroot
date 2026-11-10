@@ -1,0 +1,106 @@
+#!/bin/sh
+set -eu
+
+settings=/etc/calamares/settings.conf
+if ! grep -Fxq 'branding: debian' "$settings"; then
+    printf 'No se reconoce la configuracion de marca de Calamares: %s\n' "$settings" >&2
+    exit 1
+fi
+if [ ! -f /etc/calamares/branding/jadevOS/branding.desc ]; then
+    printf 'Falta la configuracion de marca de JadevOS para Calamares.\n' >&2
+    exit 1
+fi
+
+sed -i 's/^branding: debian$/branding: jadevOS/' "$settings"
+for theme_package in sddm-theme-debian-elarun sddm-theme-debian-breeze; do
+    if dpkg-query -W -f='${db:Status-Status}' "$theme_package" 2>/dev/null \
+        | grep -Fxq installed
+    then
+        dpkg --purge "$theme_package"
+    fi
+done
+rm -f \
+    /etc/xdg/autostart/calamares-desktop-icon.desktop \
+    /usr/share/applications/calamares-install-debian.desktop \
+    /usr/share/pixmaps/install-debian.png \
+    /usr/bin/calamares-install-debian
+find /usr/share/applications -maxdepth 1 -type f \
+    \( -iname 'calamares*.desktop' -o -iname 'calamares-install-*.desktop' \) \
+    -delete
+rm -f /usr/share/xsessions/openbox.desktop
+
+icon_dir=/usr/share/icons/hicolor/scalable/apps
+install -D -m 0644 \
+    /etc/calamares/branding/jadevOS/jadevos-logo.svg \
+    "$icon_dir/jadevos.svg"
+rsvg-convert \
+    --format png \
+    --height 256 \
+    --width 256 \
+    --output /usr/share/pixmaps/jadevos-logo.png \
+    /etc/calamares/branding/jadevOS/jadevos-logo.svg
+install -D -m 0644 \
+    /etc/calamares/branding/jadevOS/jadevos-logo.svg \
+    /usr/share/icons/hicolor/scalable/apps/jadevos-installer.svg
+cat > /usr/share/applications/jadevos-installer.desktop <<'EOF'
+[Desktop Entry]
+Type=Application
+Name=Install JadevOS
+Name[es]=Instalar JadevOS
+Comment=Install JadevOS on this computer
+Comment[es]=Instala JadevOS en este equipo
+Exec=pkexec /usr/bin/calamares
+TryExec=/usr/bin/pkexec
+Icon=jadevos-installer
+Terminal=false
+Categories=System;
+StartupNotify=true
+EOF
+chmod 0644 /usr/share/applications/jadevos-installer.desktop
+rm -f \
+    /etc/skel/Desktop/Install-JadevOS.desktop \
+    /etc/skel/Desktop/JadevOS-About.desktop \
+    /usr/share/applications/jadevos-about.desktop \
+    /usr/share/icons/hicolor/scalable/apps/jadevos-about.svg \
+    /usr/local/bin/jadevos-about
+
+systemctl enable sddm.service
+systemctl enable zramswap.service
+sed -i 's/^ID=debian$/ID=jadevos/' /etc/os-release /usr/lib/os-release
+
+theme_dir=/usr/share/plymouth/themes/jadevos
+spinner_dir=/usr/share/plymouth/themes/spinner
+if [ ! -f "$spinner_dir/spinner.plymouth" ]; then
+    printf 'Faltan los recursos de la rueda de carga de Plymouth.\n' >&2
+    exit 1
+fi
+
+mkdir -p "$theme_dir"
+cp -a "$spinner_dir/." "$theme_dir/"
+rm -f \
+    "$theme_dir/spinner.plymouth" \
+    "$theme_dir/header-image.png" \
+    "$theme_dir/watermark.png"
+sed \
+    -e 's/^Name=.*/Name=JadevOS/' \
+    -e 's/^Description=.*/Description=JadevOS black boot screen with white text and spinner/' \
+    -e 's/^BackgroundStartColor=.*/BackgroundStartColor=0x000000/' \
+    -e 's/^BackgroundEndColor=.*/BackgroundEndColor=0x000000/' \
+    -e 's@/spinner$@/jadevos@' \
+    "$spinner_dir/spinner.plymouth" \
+    > "$theme_dir/jadevos.plymouth"
+sed -i \
+    -e '/^\[boot-up\]$/,/^\[shutdown\]$/s/^UseProgressBar=true$/UseProgressBar=false/' \
+    "$theme_dir/jadevos.plymouth"
+sed -i \
+    -e '/^\[boot-up\]$/a Title=JadevOS' \
+    -e '/^SubTitle=BETA 4$/d' \
+    -e 's/^MessageBelowAnimation=true$/MessageBelowAnimation=false/' \
+    "$theme_dir/jadevos.plymouth"
+debian_watermark=/usr/share/desktop-base/debian-logos/logo-text-version-64.png
+if [ -e "$debian_watermark" ]; then
+    dpkg-divert --local --rename --add \
+        --divert "${debian_watermark}.debian" \
+        "$debian_watermark"
+fi
+plymouth-set-default-theme --rebuild-initrd jadevos

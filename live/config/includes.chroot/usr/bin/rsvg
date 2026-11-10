@@ -1,0 +1,14 @@
+#!/bin/sh
+set -eu
+
+if [ "$#" -ne 8 ] || [ "$1" != "--format" ] || [ "$3" != "--height" ] || [ "$5" != "--width" ]; then
+    printf 'Interfaz rsvg no compatible: se esperaban opciones de conversion de live-build.\n' >&2
+    exit 2
+fi
+
+exec rsvg-convert \
+    --format "$2" \
+    --height "$4" \
+    --width "$6" \
+    --output "$8" \
+    "$7"

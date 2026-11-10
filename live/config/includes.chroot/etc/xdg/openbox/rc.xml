@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openbox_config xmlns="http://openbox.org/3.4/rc">
+  <resistance><strength>10</strength><screen_edge_strength>20</screen_edge_strength></resistance>
+  <focus><focusNew>yes</focusNew><followMouse>no</followMouse><raiseOnFocus>yes</raiseOnFocus></focus>
+  <placement><policy>Smart</policy><center>yes</center></placement>
+  <theme><name>Clearlooks</name><titleLayout>NLIMC</titleLayout><keepBorder>yes</keepBorder><animateIconify>yes</animateIconify></theme>
+  <desktops><number>4</number><firstdesk>1</firstdesk><names><name>Workspace 1</name><name>Workspace 2</name><name>Workspace 3</name><name>Workspace 4</name></names></desktops>
+  <margins><top>56</top><bottom>70</bottom><left>0</left><right>0</right></margins>
+  <keyboard>
+    <keybind key="A-Tab"><action name="NextWindow"><dialog>icons</dialog></action></keybind>
+    <keybind key="A-S-Tab"><action name="PreviousWindow"><dialog>icons</dialog></action></keybind>
+    <keybind key="A-F9"><action name="Iconify"/></keybind>
+    <keybind key="A-F10"><action name="ToggleMaximizeFull"/></keybind>
+    <keybind key="A-F11"><action name="ToggleFullscreen"/></keybind>
+    <keybind key="W-Left"><action name="Execute"><command>/usr/local/bin/carbon-snap left</command></action></keybind>
+    <keybind key="W-Right"><action name="Execute"><command>/usr/local/bin/carbon-snap right</command></action></keybind>
+    <keybind key="W-Up"><action name="ToggleMaximizeFull"/></keybind>
+    <keybind key="W-Down"><action name="Iconify"/></keybind>
+    <keybind key="W-Space"><action name="Execute"><command>carbon-dsk --drawer</command></action></keybind>
+    <keybind key="C-A-Left"><action name="GoToDesktop"><to>left</to><wrap>yes</wrap></action></keybind>
+    <keybind key="C-A-Right"><action name="GoToDesktop"><to>right</to><wrap>yes</wrap></action></keybind>
+    <keybind key="C-A-d"><action name="ToggleShowDesktop"/></keybind>
+    <keybind key="A-F4"><action name="Close"/></keybind>
+  </keyboard>
+  <mouse>
+    <context name="Root">
+      <mousebind button="Right" action="Press"><action name="ShowMenu"><menu>root-menu</menu></action></mousebind>
+    </context>
+    <context name="Frame">
+      <mousebind button="A-Left" action="Drag"><action name="Move"/></mousebind>
+      <mousebind button="A-Right" action="Drag"><action name="Resize"/></mousebind>
+    </context>
+    <context name="Titlebar">
+      <mousebind button="Left" action="DoubleClick"><action name="ToggleMaximizeFull"/></mousebind>
+      <mousebind button="Right" action="Press"><action name="ShowMenu"><menu>client-menu</menu></action></mousebind>
+    </context>
+  </mouse>
+  <menu><file>/etc/xdg/openbox/menu.xml</file><hideDelay>200</hideDelay><middle>no</middle><submenuShowDelay>100</submenuShowDelay></menu>
+  <applications/>
+</openbox_config>

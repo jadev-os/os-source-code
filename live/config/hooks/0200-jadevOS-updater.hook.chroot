@@ -1,0 +1,11 @@
+#!/bin/sh
+set -eu
+
+package=/tmp/jadevOS-updater.deb
+if [ ! -f "$package" ]; then
+    printf 'Falta el paquete JadevOS Updater en la imagen live.\n' >&2
+    exit 1
+fi
+
+dpkg -i "$package"
+rm -f "$package"

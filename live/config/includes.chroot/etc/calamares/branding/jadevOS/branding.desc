@@ -1,0 +1,32 @@
+---
+componentName: jadevOS
+welcomeStyleCalamares: true
+welcomeExpandingLogo: true
+windowExpanding: normal
+windowSize: 800px,580px
+windowPlacement: center
+
+strings:
+    productName:         JadevOS Computers
+    shortProductName:    JadevOS
+    version:             "1.0 BETA 4"
+    shortVersion:        "1.0 BETA 4"
+    versionedName:       JadevOS Computers 1.0 BETA 4
+    shortVersionedName:  JadevOS 1.0 BETA 4
+    bootloaderEntryName: JadevOS
+sidebar: widget
+navigation: widget
+
+images:
+    productLogo:         "jadevos-logo.svg"
+    productIcon:         "jadevos-logo.svg"
+    productWelcome:      "jadevos-logo.svg"
+
+style:
+   SidebarBackground:    "#10224d"
+   SidebarText:          "#FFFFFF"
+   SidebarTextCurrent:   "#fbfbfb"
+   SidebarBackgroundCurrent: "#337baa"
+
+slideshow:               "show.qml"
+slideshowAPI: 2

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openbox_menu xmlns="http://openbox.org/3.4/menu">
+  <menu id="root-menu" label="JadevOS">
+    <item label="Applications"><action name="Execute"><command>carbon-dsk --drawer</command></action></item>
+    <item label="JadevOS Settings"><action name="Execute"><command>jadevos-settings</command></action></item>
+    <item label="Files"><action name="Execute"><command>jadev-files</command></action></item>
+    <separator/>
+    <item label="Lock screen"><action name="Execute"><command>carbon-dsk --lock</command></action></item>
+    <item label="Log out"><action name="Exit"/></item>
+    <item label="Suspend"><action name="Execute"><command>systemctl suspend</command></action></item>
+    <item label="Restart"><action name="Execute"><command>systemctl reboot</command></action></item>
+    <item label="Shut down"><action name="Execute"><command>systemctl poweroff</command></action></item>
+  </menu>
+</openbox_menu>

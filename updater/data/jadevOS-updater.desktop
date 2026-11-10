@@ -1,0 +1,12 @@
+[Desktop Entry]
+Type=Application
+Name=Software Updater
+Name[es]=Actualizador de software
+GenericName=Software Updater
+Comment=Check for and install signed JadevOS updates
+Keywords=updater;update;software;updates;jadevos;
+Exec=jadevOS-updater
+Icon=jadevOS-updater
+Terminal=false
+Categories=System;Settings;
+StartupNotify=true

@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="900" viewBox="0 0 1600 900">
+  <defs>
+    <linearGradient id="sky" x2="0" y2="1">
+      <stop stop-color="#10224d"/>
+      <stop offset="0.48" stop-color="#337baa"/>
+      <stop offset="1" stop-color="#b3e4e5"/>
+    </linearGradient>
+    <linearGradient id="water" x2="0" y2="1">
+      <stop stop-color="#3998ba"/>
+      <stop offset="1" stop-color="#142b68"/>
+    </linearGradient>
+    <linearGradient id="peak" x2="0.15" y2="1">
+      <stop stop-color="#eef5f7"/>
+      <stop offset="0.2" stop-color="#88a9bd"/>
+      <stop offset="1" stop-color="#344f79"/>
+    </linearGradient>
+  </defs>
+  <rect width="1600" height="610" fill="url(#sky)"/>
+  <circle cx="1230" cy="190" r="78" fill="#fff5d0" opacity=".82"/>
+  <path d="M0 550 240 295l172 195 238-320 302 380 241-286 407 293v43H0Z" fill="url(#peak)"/>
+  <path d="m523 325 127-155 143 181-76-46-54 25-54-39-42 45-37-11Z" fill="#f5f8f7" opacity=".88"/>
+  <path d="m1000 458 193-194 137 146-84-31-49 37-67-22-58 52-29-26Z" fill="#e6eff0" opacity=".82"/>
+  <path d="M0 560c190-34 339 20 522-2s353-19 506 5 401-24 572-1v338H0Z" fill="url(#water)"/>
+  <path d="M0 640c240-23 358 33 591 4s425-30 596 3 271-18 413-6M0 730c221-21 389 28 589 1s408-22 615 3 257-14 396 0M0 822c198-18 377 20 583-2s434-17 613 4 251-8 404 2" fill="none" stroke="#bcf1e8" stroke-opacity=".3" stroke-width="4"/>
+  <text x="84" y="805" fill="#fff" fill-opacity=".92" font-family="sans-serif" font-size="46" letter-spacing="7">JADEVOS</text>
+  <text x="89" y="842" fill="#d9eef2" fill-opacity=".85" font-family="sans-serif" font-size="17" letter-spacing="5">COMPUTERS</text>
+</svg>
